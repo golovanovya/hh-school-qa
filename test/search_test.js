@@ -33,6 +33,16 @@ describe(baseUrl, () => {
                         expect(res).to.have.status(404);
                     })
             });
+            it('sql injection', () => {
+                makeRequest().query({text: "java'--' AND 1=2"})
+                    .end((err, res) => {
+                        expect(err).to.be.null;
+                        res.should.to.have.status(200)
+                            .to.be.json;
+                        res.body.items.should.be.a('array')
+                            .to.have.lengthOf.above(0);
+                    });
+            });
             const assertions = [
                 ['frontend разработчик', [/frontend/gmi, /разраб/gmi]],
                 ['"frontend разработчик"', [/frontend.?разработчик/gmi]],
